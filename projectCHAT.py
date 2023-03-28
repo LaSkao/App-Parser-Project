@@ -29,10 +29,10 @@ while nextpage is not None:
     url = nextpage['href']
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
-    products = soup.findall('div', class_='product-info')
+    products = soup.find_all('div', class_='product-info')
     for product in products:
-        name = product.find('h2').text.strip()
-        price = product.find('div', class_='price').text.strip()
+        name = product.find('span', class_='product-card-name__text').text.strip()
+        price = product.find('span', class_='product-price__sum-rubles').text.strip()
         result.append({"name": name, "price": price})
 
     # Ищем ссылку на следующую страницу на текущей странице
