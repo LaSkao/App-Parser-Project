@@ -12,7 +12,7 @@ response = requests.get(url)
 soup = BeautifulSoup(response.content, 'html.parser')
 
 # находим все div-контейнеры с информацией о продуктах на первой странице
-products = soup.findall('div', class_='catalog-2-level-product-card product-card subcategory-or-type__products-item catalog--online offline-prices-sorting--all with-prices-drop')
+products = soup.find('div', class_='catalog-2-level-product-card product-card subcategory-or-type__products-item catalog--online offline-prices-sorting--all with-prices-drop')
 
 # для каждого продукта получаем название и цену
 result = []
