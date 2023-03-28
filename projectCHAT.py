@@ -12,7 +12,7 @@ response = requests.get(url)
 soup = BeautifulSoup(response.content, 'html.parser')
 
 # находим все div-контейнеры с информацией о продуктах на первой странице
-products = soup.find('div', class_='catalog-2-level-product-card product-card subcategory-or-type__products-item catalog--online offline-prices-sorting--all with-prices-drop')
+products = soup.find_all('div', class_='catalog-2-level-product-card product-card subcategory-or-type__products-item catalog--online offline-prices-sorting--all with-prices-drop')
 
 # для каждого продукта получаем название и цену
 result = []
@@ -22,21 +22,20 @@ for product in products:
     result.append({"name": name, "price": price})
 
 # проверяем, есть ли на странице ссылка на следующую страницу
+# проверяем, есть ли на странице ссылка на следующую страницу
 nextpage = soup.find('a', class_='v-pagination__navigation catalog-paginate__item')
-while nextpage():
-
-    # получаем ссылку на следующую страницу и повторяем все те же шаги
+while nextpage is not None:
+    # Получаем ссылку на следующую страницу и повторяем все те же шаги
     url = nextpage['href']
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     products = soup.findall('div', class_='product-info')
-
     for product in products:
         name = product.find('h2').text.strip()
         price = product.find('div', class_='price').text.strip()
         result.append({"name": name, "price": price})
 
-    # ищем ссылку на следующую страницу на текущей странице
+    # Ищем ссылку на следующую страницу на текущей странице
     nextpage = soup.find('a', class_='v-pagination__navigation catalog-paginate__item')
 
 # сохраняем полученные данные в JSON-файл
