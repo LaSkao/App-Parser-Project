@@ -35,7 +35,7 @@ for product in soup.find_all('div', class_='product-layout product-grid col-lg-4
     })
 
 # сохраняем список продуктов в файле json
-with open("products.json", "w") as file:
-    json.dump(products, file)
+with open("products.json", "w", encoding="utf-8") as file:
+    json.dump(products, file, ensure_ascii=False, indent=4)
 
 print("Данные сохранены в файле products.json")
