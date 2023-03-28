@@ -1,43 +1,50 @@
 import requests
-import json
 from bs4 import BeautifulSoup
+import json
 
-# url страницы, которую мы хотим спарсить
-url = "https://online.metro-cc.ru/category/alkogolnaya-produkciya/krepkiy-alkogol"
+# базовый url страницы, которую мы хотим спарсить
+base_url = "https://magnit.katalog-ceny.ru/index.php?route=product/category&path=118_146&page={}"
 
-# отправляем GET-запрос на получение HTML-кода страницы
-response = requests.get(url)
+# создаем пустой список, в который будем добавлять словари для каждого продукта
+products = []
 
-# парсим HTML-код с помощью Beautiful Soup
-soup = BeautifulSoup(response.content, 'html.parser')
+# итерируемся по страницам
+page_number = 1
+while True:
+    # отправляем GET-запрос на получение HTML-кода страницы
+    response = requests.get(base_url.format(page_number))
 
-# находим все div-контейнеры с информацией о продуктах на первой странице
-products = soup.find_all('div', class_='catalog-2-level-product-card product-card subcategory-or-type__products-item catalog--online offline-prices-sorting--all with-prices-drop')
+    # проверяем, что страница существует
+    if response.status_code != 200:
+        break
 
-# для каждого продукта получаем название и цену
-result = []
-for product in products:
-    name = product.find('span', class_='product-card-name__text').text.strip()
-    price = product.find('span', class_='product-price__sum-rubles').text.strip()
-    result.append({"name": name, "price": price})
-
-# проверяем, есть ли на странице ссылка на следующую страницу
-# проверяем, есть ли на странице ссылка на следующую страницу
-nextpage = soup.find('a', class_='v-pagination__navigation catalog-paginate__item')
-while nextpage is not None:
-    # Получаем ссылку на следующую страницу и повторяем все те же шаги
-    url = nextpage['href']
-    response = requests.get(url)
+    # парсим HTML-код с помощью Beautiful Soup
     soup = BeautifulSoup(response.content, 'html.parser')
-    products = soup.find_all('div', class_='product-info')
-    for product in products:
-        name = product.find('span', class_='product-card-name__text').text.strip()
-        price = product.find('span', class_='product-price__sum-rubles').text.strip()
-        result.append({"name": name, "price": price})
 
-    # Ищем ссылку на следующую страницу на текущей странице
-    nextpage = soup.find('a', class_='v-pagination__navigation catalog-paginate__item')
+    # находим все div-контейнеры с информацией о продуктах на странице
+    for product in soup.find_all('div', class_='product-layout product-grid col-lg-4 col-md-4 col-sm-6 col-xs-12'):
+        name = product.find('div', class_='product-name').text.strip()
+        price = product.find('p', class_='price').text.strip()
 
-# сохраняем полученные данные в JSON-файл
-with open('products.json', 'w') as f:
-    json.dump(result, f)
+        # проверяем наличие старой цены
+        old_price_element = product.find('span', class_='price-old')
+        if old_price_element is not None:
+            old_price = old_price_element.text.strip()
+        else:
+            old_price = ""
+
+        # добавляем словарь с информацией о продукте в список
+        products.append({
+            "name": name,
+            "price": price,
+            "old_price": old_price
+        })
+
+    # увеличиваем номер страницы на 1
+    page_number += 1
+
+# сохраняем список продуктов в файле json
+with open("products.json", "w", encoding="utf-8") as file:
+    json.dump(products, file, ensure_ascii=False, indent=4)
+
+print("Данные сохранены в файле products.json")

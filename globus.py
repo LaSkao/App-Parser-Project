@@ -4,9 +4,8 @@ import json
 from time import sleep
 
 # url страницы, которую мы хотим спарсить
-url = "https://magnit.katalog-ceny.ru/index.php?route=product/category&path=118_146&page="
+url = "https://magnit.katalog-ceny.ru/index.php?route=product/category&path=118_143&page="
 
-# создаем пустой список, в который будем добавлять словари для каждого продукта
 # создаем пустой список, в который будем добавлять словари для каждого продукта
 products = []
 
@@ -52,8 +51,13 @@ while True:
 
     page_num += 1
 
-# сохраняем список продуктов в файле json
-with open("products1.json", "w", encoding="utf-8") as file:
-    json.dump(products, file, ensure_ascii=False, indent=4)
+file_path = "C:/Users/laskao/products.json"
 
-print("Данные сохранены в файле products.json")
+# сохраняем список продуктов в файле json
+try:
+    with open(file_path, "w", encoding="utf-8") as file:
+        json.dump(products, file, ensure_ascii=False, indent=4)
+
+    print("Данные сохранены в файле products.json")
+except Exception as e:
+    print("Произошла ошибка при записи в файл:", e)
