@@ -25,7 +25,7 @@ for product in soup.find_all('div', class_='product-layout product-grid col-lg-4
     if old_price_element is not None:
         old_price = old_price_element.text.strip()
     else:
-        old_price = ""
+        old_price = " "
 
     # добавляем словарь с информацией о продукте в список
     products.append({
