@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магнит - Поиск</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .search-form {
+            margin-bottom: 30px;
+        }
+
+        .search-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .search-form input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-right: 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination .active {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .pagination .disabled {
+            color: #bbb;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Магнит - Поиск</h1>
+    <div class="search-form">
+        <form action="{{ url_for('search') }}" method="get">
+            <label for="query">Введите название товара:</label>
+            <input type="text" id="query" name="q" value="{{ query }}" placeholder="Название товара">
+            <button type="submit">Найти</button>
+        </form>
+    </div>
+    {% if results %}
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Цена со скидкой</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in results %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.old_price }} руб.</td>
+                <td>{{ product.price_new }} руб.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if num_pages > 1 %}
+    <div class="pagination">
+        {% if page_num > 1 %}
+        <a href="{{ url_for('search', q=query, page=1) }}">&laquo; первая</a>
+        <a href="{{ url_for('search', q=query, page=page_num - 1) }}">&lsaquo; предыдущая</a>
+        {% endif %}
+        {% endfor %}
+        {% if page_num < num_pages %}
+        <a href="{{ url_for('search', q=query, page=page_num + 1) }}">следующая &rsaquo;</a>
+        <a href="{{ url_for('search', q=query, page=num_pages) }}">последняя &raquo;</a>
+        {% endif %}
+        </div>
+        
+        </div>
+        {% endblock %}
+    </div>
+</body>
+</html>

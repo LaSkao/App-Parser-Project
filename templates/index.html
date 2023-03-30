@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магнит</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+        
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-right: 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s ease;
+        }
+        
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        
+        .pagination .active {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        
+        .pagination .disabled {
+            color: #bbb;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Магнит</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Цена со скидкой</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.old_price }} руб.</td>
+                <td>{{ product.price_new }} руб.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        {% if page_num > 1 %}
+        <a href="?page=1">&laquo; первая</a>
+        <a href="?page={{ page_num - 1 }}">&lsaquo; предыдущая</a>
+        {% endif %}
+        {% for page in pages_to_show %}
+        {% if page == page_num %}
+        <span class="active">{{ page }}</span>
+        {% else %}
+        <a href="?page={{ page }}">{{ page }}</a>
+        {% endif %}
+        {% endfor %}
+        {% if page_num < num_pages %}
+        <a href="?page={{ page_num + 1 }}">следующая &rsaquo;</a>
+        <a href="?page={{ num_pages }}">последняя &raquo;</a>
+        {% endif %}
+    </div>
+</body>
+</html>
