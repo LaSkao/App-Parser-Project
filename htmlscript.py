@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request
-import json
+from flask import Flask, render_template, request, session
+import json 
 
 app = Flask(__name__)
 
@@ -9,6 +9,26 @@ with open('products.json', encoding='utf-8') as file:
 
 # количество продуктов на странице
 page_size = 30
+
+# установка секретного ключа для сессий
+app.secret_key = 'mysecretkey'
+
+# добавление товара в корзину
+@app.route('/add_to_cart')
+def add_to_cart():
+    product_id = request.args.get('product_id')
+    quantity = request.args.get('quantity')
+
+    # получаем корзину из сессии
+    cart = session.get('cart', {})
+
+    # добавляем товар в корзину
+    cart[product_id] = cart.get(product_id, 0) + int(quantity)
+
+    # сохраняем корзину в сессии
+    session['cart'] = cart
+
+    return 'Product added to cart successfully!'
 
 # рендеринг страницы с товарами
 @app.route('/')
@@ -38,7 +58,7 @@ def show_products():
         'page_num': page_num,
         'page_size': page_size,
         'total': len(products),
-        'pages_to_show': pages_to_show, # добавляем переменную pages_to_show в контекст
+        'pages_to_show': pages_to_show,
         'num_pages': num_pages,
     }
 
@@ -50,7 +70,10 @@ def search_products():
     query = request.args.get('q')
 
     # фильтруем список продуктов по запросу пользователя
-    filtered_products = [product for product in products if query.lower() in product['name'].lower()]
+    if query:
+        filtered_products = [product for product in products if query.lower() in product.get('pname', '').lower() or query.lower() in str(product.get('pprice_new', '')).lower() or query.lower() in product.get('mname', '').lower() or query.lower() in str(product.get('mprice_new', '')).lower()]
+    else:
+        filtered_products = []
 
     # формируем контекст для шаблона
     context = {
@@ -60,6 +83,7 @@ def search_products():
     }
 
     return render_template('search.html', **context)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

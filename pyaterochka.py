@@ -7,9 +7,9 @@ DEBUG_SLEEP_TIME = 0.5
 if DEBUG: from time import sleep 
 
 # url страницы, которую мы хотим спарсить
-url = "https://magnit.katalog-ceny.ru/tovary/?page="
+url = "https://pyaterochkaakcii.ru/katalog?page="
 # файл для дампа инфы
-file_path = "magnit.json"
+file_path = "5erka.json"
 
 # обходим все страницы с продуктами
 page_num = 1
@@ -27,10 +27,10 @@ while True:
     print("-"*10+f"PAGE {page_num}"+"-"*10)
 
     # находим все div-контейнеры с информацией о продуктах на текущей странице
-    parsed_products = soup.find_all('div', class_='product-layout product-grid col-lg-4 col-md-4 col-sm-6 col-xs-12')
+    parsed_products = soup.find_all('div', class_='col-lg-3 col-md-4 col-sm-12')
     if len(parsed_products) == 0: break
     for product in parsed_products:
-        name = product.find('div', class_='product-name').text.strip()
+        name = product.find('div', class_='name').text.strip()
 
         # Проверяем наличие классов price_new и old_price
         if product.find('span', class_='price-new') is not None and product.find('span', class_='price-old') is not None:
@@ -38,15 +38,15 @@ while True:
             old_price = product.find('span', class_='price-old').text.strip()
         else:
             # Если классов price_new и old_price нет, сохраняем только цену
-            price = product.find('p', class_='price').text.strip()
+            price = product.find('div', class_='price').text.strip()
             price_new = price
             old_price = price
 
         # добавляем словарь с информацией о продукте в список
         products.append({
-            "Mname": name,
-            "Mprice_new": price_new,
-            "Mprice-old": old_price
+            "Pname": name,
+            "Pprice_new": price_new,
+            "Pprice_old": old_price
         })
         if DEBUG: print(products[-1], end='\n\n')
     
