@@ -44,9 +44,10 @@ while True:
 
         # добавляем словарь с информацией о продукте в список
         products.append({
-            "Pname": name,
-            "Pprice_new": price_new,
-            "Pprice_old": old_price
+            "name": name,
+            "discounted_price": price_new,
+            "price": old_price,
+            "store": 'pyaterochka'
         })
         if DEBUG: print(products[-1], end='\n\n')
     

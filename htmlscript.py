@@ -67,14 +67,17 @@ def show_products():
 # поиск товара по названию
 @app.route('/search')
 def search_products():
-    query = request.args.get('q')
-
+    query = request.args.get('query_product')
+    
     # фильтруем список продуктов по запросу пользователя
     if query:
-        filtered_products = [product for product in products if query.lower() in product.get('pname', '').lower() or query.lower() in str(product.get('pprice_new', '')).lower() or query.lower() in product.get('mname', '').lower() or query.lower() in str(product.get('mprice_new', '')).lower()]
+        clear_query = query.lower().strip()
+        filtered_products = [product for product in products
+                                if clear_query in product.get('name', '').lower() 
+                                    or clear_query in str(product.get('price_new', '')).lower()]
     else:
         filtered_products = []
-
+    print(filtered_products)
     # формируем контекст для шаблона
     context = {
         'products': filtered_products,

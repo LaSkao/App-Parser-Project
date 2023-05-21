@@ -87,7 +87,7 @@
     <div class="search-form">
         <form action="{{ url_for('search_products') }}" method="get">
             <label for="query">Введите название товара:</label>
-            <input type="text" id="query" name="q" value="{{ query }}" placeholder="Название товара">
+            <input type="text" id="query" name="query_product" value="{{ query }}" placeholder="Название товара">
             <button type="submit">Найти</button>
         </form>
     </div>
